@@ -1,6 +1,8 @@
 # -----------------------------------------
 # 開発環境
-FROM golang:1.19.2-alpine3.16 as dev
+FROM golang:1.18-alpine3.16 as dev
 
 RUN mkdir /app
 WORKDIR /app
+
+RUN apk update && apk add alpine-sdk && apk add jq
