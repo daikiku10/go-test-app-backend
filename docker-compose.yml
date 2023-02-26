@@ -10,6 +10,9 @@ services:
     tty: true
     ports:
       - 8080:8080
+    # dbを先に起動する
+    depends_on:
+      - "db"
   db:
     image: mysql:8.0.31
     platform: linux/amd64
