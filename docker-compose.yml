@@ -28,6 +28,11 @@ services:
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
      - 3306:3306
+  panel:
+    image: "adminer:latest"
+    restart: always
+    ports:
+      - 8082:8080
 volumes:
   db-data:
     driver: local
