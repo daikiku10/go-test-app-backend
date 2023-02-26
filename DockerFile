@@ -6,6 +6,3 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN apk update && apk add alpine-sdk && apk add jq
-
-RUN go install github.com/go-sql-driver/mysql
-RUN go install github.com/jinzhu/gorm
