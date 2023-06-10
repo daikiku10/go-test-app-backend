@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type res struct {
@@ -17,17 +18,19 @@ func main() {
 	e := echo.New()
 
 	// ミドルウェア
-	e.Use(middleware)
+	e.Use(Middleware)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	// ルート指定
 	e.GET("/test", getHandler)
 	e.POST("/test", postHandler)
 
 	// サーバ起動
-	e.Start(":8080")
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
-func middleware(next echo.HandlerFunc) echo.HandlerFunc {
+func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// ミドルウェアの前処理
 		println("前処理です")
@@ -43,6 +46,10 @@ func middleware(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func getHandler(c echo.Context) error {
+
+	name := c.QueryParam("name")
+	println(name)
+
 	response := res{
 		TestInt:    21,
 		TestString: "getTestです。",
