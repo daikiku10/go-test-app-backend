@@ -31,12 +31,14 @@ func Init() *echo.Echo {
 	return e
 }
 
+// CustomContext はハンドラに渡すContext型をカスタムコンテキストに変換するミドルウェア
 func CustomContext(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// ミドルウェアの前処理
 		println("前処理です")
 
 		// ミドルウェア内で次のハンドラまたはミドルウェアを呼び出す
+		// 型変換する
 		cc := context.NewContext(c)
 		err := next(cc)
 
