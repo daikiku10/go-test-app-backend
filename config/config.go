@@ -3,6 +3,7 @@ package config
 import "github.com/caarlos0/env/v6"
 
 type Config struct {
+	Env           string `env:"GO_ENV" envDefault:""`
 	FrontEndpoint string `env:"FRONT_ENDPOINT" envDefault:"http://localhost:3000"`
 }
 
