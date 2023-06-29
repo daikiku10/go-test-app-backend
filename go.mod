@@ -3,6 +3,7 @@ module github.com/daikiku10/go-test-app-backend
 go 1.18
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/labstack/echo/v4 v4.10.2
 )
