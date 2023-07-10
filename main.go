@@ -8,6 +8,7 @@ import (
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/route"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -41,6 +42,10 @@ func run(ctx context.Context) error {
 	} else {
 		gin.SetMode(gin.DebugMode)
 	}
+
+	router := gin.Default()
+	// CORSミドルウェアの設定
+	router.Use(cors.New(cors.Config{}))
 
 	return nil
 }
