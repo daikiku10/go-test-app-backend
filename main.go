@@ -45,7 +45,12 @@ func run(ctx context.Context) error {
 
 	router := gin.Default()
 	// CORSミドルウェアの設定
-	router.Use(cors.New(cors.Config{}))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:  []string{"http://localhost*"},
+		AllowMethods:  []string{"*"},
+		AllowHeaders:  []string{"*"},
+		AllowWildcard: true,
+	}))
 
 	return nil
 }
