@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/daikiku10/go-test-app-backend/config"
+	"github.com/daikiku10/go-test-app-backend/repository"
 	"github.com/daikiku10/go-test-app-backend/route"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -51,6 +52,13 @@ func run(ctx context.Context) error {
 		AllowHeaders:  []string{"*"},
 		AllowWildcard: true,
 	}))
+
+	// DB関係の初期化
+	_, cleanup, err := repository.NewDB(ctx, cfg)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
 
 	return nil
 }
