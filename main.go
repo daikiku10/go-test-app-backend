@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/repository"
@@ -18,13 +17,13 @@ import (
 func main() {
 	if err := run(context.Background()); err != nil {
 		log.Printf("failed to terminated server: %v", err)
-		os.Exit(1)
+		// os.Exit(1)
 	}
 
-	// e := route.Init()
+	// e := routers.Init()
 
-	// // サーバ起動
-	// // e.Start(":8080")
+	// サーバ起動
+	// e.Start(":8080")
 	// e.Logger.Fatal(e.Start(":8080"))
 
 	// if err := run(context.Background()); err != nil {
@@ -71,5 +70,8 @@ func run(ctx context.Context) error {
 		return err
 	}
 
-	return nil
+	// サーバー起動
+	log.Printf("Listening and serving HTTP on:%v", cfg.Port)
+	server := NewServer(router, fmt.Sprintf(":%d", cfg.Port))
+	return server.Run(ctx)
 }
