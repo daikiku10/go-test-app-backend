@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,9 @@ import (
 // ctx コンテキスト
 // router ルーター
 func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *config.Config) error {
+	router.GET("/test1", func(ctx *gin.Context) {
+		fmt.Printf("aaa")
+	})
 	return nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/repository"
@@ -17,23 +18,11 @@ import (
 func main() {
 	if err := run(context.Background()); err != nil {
 		log.Printf("failed to terminated server: %v", err)
-		// os.Exit(1)
+		os.Exit(1)
 	}
-
-	// e := routers.Init()
-
-	// サーバ起動
-	// e.Start(":8080")
-	// e.Logger.Fatal(e.Start(":8080"))
-
-	// if err := run(context.Background()); err != nil {
-	// 	log.Printf("failed to terminated server: %v", err)
-	// 	os.Exit(1)
-	// }
 }
 
 func run(ctx context.Context) error {
-	fmt.Println("aaa")
 	// 環境変数の取得
 	cfg, err := config.New()
 	if err != nil {
@@ -71,7 +60,10 @@ func run(ctx context.Context) error {
 	}
 
 	// サーバー起動
-	log.Printf("Listening and serving HTTP on:%v", cfg.Port)
-	server := NewServer(router, fmt.Sprintf(":%d", cfg.Port))
-	return server.Run(ctx)
+	return router.Run(fmt.Sprintf(":%d", cfg.Port))
+
+	// 課題：グレースフルシャットダウン
+	// log.Printf("Listening and serving HTTP on:%v", cfg.Port)
+	// server := NewServer(router, fmt.Sprintf(":%d", cfg.Port))
+	// return server.Run(ctx)
 }
