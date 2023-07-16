@@ -8,23 +8,29 @@ import (
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/repository"
-	"github.com/daikiku10/go-test-app-backend/route"
+	routers "github.com/daikiku10/go-test-app-backend/router"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	e := route.Init()
-
-	// サーバ起動
-	// e.Start(":8080")
-	e.Logger.Fatal(e.Start(":8080"))
-
 	if err := run(context.Background()); err != nil {
 		log.Printf("failed to terminated server: %v", err)
 		os.Exit(1)
 	}
+
+	// e := route.Init()
+
+	// // サーバ起動
+	// // e.Start(":8080")
+	// e.Logger.Fatal(e.Start(":8080"))
+
+	// if err := run(context.Background()); err != nil {
+	// 	log.Printf("failed to terminated server: %v", err)
+	// 	os.Exit(1)
+	// }
 }
 
 func run(ctx context.Context) error {
@@ -54,11 +60,16 @@ func run(ctx context.Context) error {
 	}))
 
 	// DB関係の初期化
-	_, cleanup, err := repository.NewDB(ctx, cfg)
+	db, cleanup, err := repository.NewDB(ctx, cfg)
 	if err != nil {
 		return err
 	}
 	defer cleanup()
+
+	// ルーティングの初期化
+	if err := routers.SetRouting(ctx, db, router, cfg); err != nil {
+		return err
+	}
 
 	return nil
 }
