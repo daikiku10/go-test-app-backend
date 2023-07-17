@@ -28,7 +28,7 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	// ユーザー登録
 	postRegisterUserService := service.NewPostRegisterUser()
 	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
-	groupRoute.POST("/users", postRegisterUserHandler.ServerHTTP)
+	groupRoute.POST("/user", postRegisterUserHandler.ServerHTTP)
 
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
