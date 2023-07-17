@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/daikiku10/go-test-app-backend/config"
+	"github.com/daikiku10/go-test-app-backend/utils/clock"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -39,5 +40,14 @@ func NewDB(ctx context.Context, cfg *config.Config) (*sqlx.DB, func(), error) {
 	}
 	xdb := sqlx.NewDb(db, "mysql")
 	return xdb, func() { _ = db.Close() }, nil
+}
 
+type Repository struct {
+	Clocker clock.Clocker
+}
+
+func NewRepository(clocker clock.Clocker) *Repository {
+	return &Repository{
+		Clocker: clocker,
+	}
 }

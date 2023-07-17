@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/daikiku10/go-test-app-backend/config"
+	"github.com/daikiku10/go-test-app-backend/handler"
+	"github.com/daikiku10/go-test-app-backend/service"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -15,6 +17,19 @@ import (
 // ctx コンテキスト
 // router ルーター
 func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *config.Config) error {
+	// 時刻取得
+	// clocker := clock.RealClocker{}
+	// レポジトリ作成
+	// rep := repository.NewRepository(clocker)
+
+	// ルーティングの設定
+	groupRoute := router.Group("/api/v1")
+
+	// ユーザー登録
+	postRegisterUserService := service.NewPostRegisterUser()
+	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
+	groupRoute.POST("/users", postRegisterUserHandler.ServerHTTP)
+
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
 	})
