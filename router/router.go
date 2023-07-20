@@ -25,6 +25,10 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	// ルーティングの設定
 	groupRoute := router.Group("/api/v1")
 
+	// 仮ユーザー登録
+	registerTemporaryUserService := service.NewRegisterTemporaryUser()
+	registerTemporaryUserHandler := handler.NewRegisterTemporaryUser(registerTemporaryUserService)
+	groupRoute.POST("temporary_user", registerTemporaryUserHandler.ServerHTTP)
 	// ユーザー登録
 	postRegisterUserService := service.NewPostRegisterUser()
 	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
