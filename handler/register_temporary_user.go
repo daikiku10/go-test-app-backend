@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type RegisterTemporaryUser struct {
@@ -38,6 +39,41 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		APIErrorResponse(ctx, http.StatusBadRequest, errorTitle, err.Error())
 		return
+	}
+	// バリデーションチェック
+	err := validation.ValidateStruct(&input,
+		validation.Field(
+			&input.FirstName,
+			validation.Required,
+			validation.Length(1, 50),
+		),
+		validation.Field(
+			&input.FamilyNameKana,
+			validation.Required,
+			validation.Length(1, 50),
+		),
+		validation.Field(
+			&input.FamilyName,
+			validation.Required,
+			validation.Length(1, 50),
+		),
+		validation.Field(
+			&input.FirstNameKana,
+			validation.Required,
+			validation.Length(1, 50),
+		),
+		validation.Field(
+			&input.Password,
+			validation.Required,
+			validation.Length(1, 50),
+		),
+		validation.Field(
+			&input.Email,
+			validation.Required,
+			validation.Length(1, 256),
+		))
+	if err != nil {
+		APIErrorResponse(ctx, http.StatusBadRequest, errorTitle, err.Error())
 	}
 
 	fmt.Printf("%+v", &input)
