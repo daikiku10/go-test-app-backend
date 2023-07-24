@@ -76,6 +76,12 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 		APIErrorResponse(ctx, http.StatusBadRequest, errorTitle, err.Error())
 	}
 
+	// サービス層へ依頼
+
+	// サービス層のエラー処理
+
+	// 成功
+
 	fmt.Printf("%+v", &input)
 	rtu.Service.RegisterTemporaryUser()
 }

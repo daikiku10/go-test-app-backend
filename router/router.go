@@ -6,7 +6,9 @@ import (
 
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/handler"
+	"github.com/daikiku10/go-test-app-backend/repository"
 	"github.com/daikiku10/go-test-app-backend/service"
+	"github.com/daikiku10/go-test-app-backend/utils/clock"
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -18,15 +20,15 @@ import (
 // router ルーター
 func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *config.Config) error {
 	// 時刻取得
-	// clocker := clock.RealClocker{}
+	clocker := clock.RealClocker{}
 	// レポジトリ作成
-	// rep := repository.NewRepository(clocker)
+	rep := repository.NewRepository(clocker)
 
 	// ルーティングの設定
 	groupRoute := router.Group("/api/v1")
 
 	// 仮ユーザー登録
-	registerTemporaryUserService := service.NewRegisterTemporaryUser()
+	registerTemporaryUserService := service.NewRegisterTemporaryUser(rep, db)
 	registerTemporaryUserHandler := handler.NewRegisterTemporaryUser(registerTemporaryUserService)
 	groupRoute.POST("temporary_user", registerTemporaryUserHandler.ServerHTTP)
 	// ユーザー登録

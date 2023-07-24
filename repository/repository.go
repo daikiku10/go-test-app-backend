@@ -51,3 +51,17 @@ func NewRepository(clocker clock.Clocker) *Repository {
 		Clocker: clocker,
 	}
 }
+
+// 比較系メソッド類
+type Preparer interface {
+	PreparexContext(ctx context.Context, query string) (*sqlx.Stmt, error)
+}
+
+// 読み取り系メソッド類
+type Queryer interface {
+	Preparer
+	QueryxContext(ctx context.Context, query string, args ...any) (*sqlx.Rows, error)
+	QueryRowxContext(ctx context.Context, query string, args ...any) *sqlx.Row
+	GetContext(ctx context.Context, dest interface{}, query string, args ...any) error
+	SelectContext(ctx context.Context, dest interface{}, query string, args ...any) error
+}
