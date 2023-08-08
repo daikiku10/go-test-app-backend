@@ -2,7 +2,19 @@
 # 開発環境
 FROM golang:1.18-alpine3.16 as dev
 
+RUN apk update && apk add alpine-sdk jq mysql mysql-client
+
 RUN mkdir /app
 WORKDIR /app
 
-RUN apk update && apk add alpine-sdk && apk add jq
+COPY /go.mod ./
+
+COPY /go.sum ./
+
+RUN go install github.com/cosmtrek/air@latest
+
+RUN go mod download
+
+EXPOSE 8080
+
+CMD ["air", "-c", "air.toml"]

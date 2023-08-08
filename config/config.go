@@ -3,7 +3,7 @@ package config
 import "github.com/caarlos0/env/v6"
 
 type Config struct {
-	Env           string `env:"GO_ENV" envDefault:""`
+	Env           string `env:"GO_ENV" envDefault:"development"`
 	Port          int    `env:"PORT" envDefault:"8080"`
 	DBHost        string `env:"DB_HOST" envDefault:"db"`
 	DBPort        int    `env:"DB_POST" envDefault:"3306"`
