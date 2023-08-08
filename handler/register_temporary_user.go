@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/daikiku10/go-test-app-backend/service"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
@@ -76,12 +77,22 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 		APIErrorResponse(ctx, http.StatusBadRequest, errorTitle, err.Error())
 	}
 
+	// サービス層のInputを作成する
+	sInput := service.ServiceRegisterTemporaryUserInput{
+		FirstName:      input.FirstName,
+		FamilyName:     input.FamilyName,
+		FirstNameKana:  input.FirstNameKana,
+		FamilyNameKana: input.FamilyNameKana,
+		Email:          input.Email,
+		Password:       input.Password,
+	}
+
 	// サービス層へ依頼
+	fmt.Printf("%+v", &input)
+	sessionID, err := rtu.Service.RegisterTemporaryUser(ctx, sInput)
 
 	// サービス層のエラー処理
-
+	fmt.Println(sessionID)
 	// 成功
 
-	fmt.Printf("%+v", &input)
-	rtu.Service.RegisterTemporaryUser()
 }
