@@ -19,15 +19,14 @@ services:
     image: mysql:8.0.31
     platform: linux/amd64
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: go_database
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_USER: go_test
       MYSQL_PASSWORD: password
+      MYSQL_DATABASE: go_database
       TZ: 'Asia/Tokyo'
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - db-data:/var/lib/mysql
-      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
     ports:
      - 3306:3306
   panel:
@@ -37,4 +36,3 @@ services:
       - 8082:8080
 volumes:
   db-data:
-    driver: local

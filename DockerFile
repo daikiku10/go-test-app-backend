@@ -11,7 +11,8 @@ COPY /go.mod ./
 
 COPY /go.sum ./
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/cosmtrek/air@latest \
+  && go install github.com/k0kubun/sqldef/cmd/mysqldef@latest
 
 RUN go mod download
 
