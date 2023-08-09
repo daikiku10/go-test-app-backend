@@ -9,6 +9,11 @@ services:
       - .:/app
     environment:
       GO_ENV: development
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: go_test
+      DB_PASSWORD: password
+      DB_NAME: go_database
     tty: true
     ports:
       - 8080:8080
