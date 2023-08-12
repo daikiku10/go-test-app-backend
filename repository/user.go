@@ -17,7 +17,7 @@ import (
 func (r *Repository) FindUserByEmail(ctx context.Context, db Queryer, email string) (model.User, error) {
 	sql := `
 		SELECT * from users
-		WHERE u.email = ?`
+		WHERE users.email = ?`
 
 	var user model.User
 

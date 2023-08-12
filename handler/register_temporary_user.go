@@ -93,6 +93,7 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 
 	// サービス層のエラー処理
 	fmt.Println(sessionID)
+	fmt.Println(err)
 	// 成功
 
 }

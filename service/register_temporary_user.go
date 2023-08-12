@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/daikiku10/go-test-app-backend/domain"
+	"github.com/daikiku10/go-test-app-backend/domain/service"
 	"github.com/daikiku10/go-test-app-backend/repository"
 )
 
@@ -41,11 +42,16 @@ func NewRegisterTemporaryUser(rep domain.UserRepo, db repository.Queryer) *Regis
 func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, input ServiceRegisterTemporaryUserInput) (string, error) {
 	fmt.Println("サービス層：仮ユーザー登録API")
 	// ユーザードメインサービス
-	// userService := service.NewUserService(rtu.Repo)
+	userService := service.NewUserService(rtu.Repo)
+
 	// 登録可能なメールか確認する
-	u, err := rtu.Repo.FindUserByEmail(ctx, rtu.DB, input.Email)
-	fmt.Println(u)
-	fmt.Println(err)
+	existMail, err := userService.ExistByEmail(ctx, &rtu.DB, input.Email)
+	if err != nil {
+		return "", err
+	}
+	if existMail {
+		return "", fmt.Errorf("failed to register: %q", repository.ErrAlreadyEntry)
+	}
 
 	// 成功時
 	return "sessionIDTest", nil
