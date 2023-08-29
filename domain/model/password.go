@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"unicode/utf8"
 
+	"github.com/daikiku10/go-test-app-backend/constant"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,7 +21,7 @@ type Password struct {
 // @return パスワードオブジェクト
 func NewPassword(pwd string) (*Password, error) {
 	// バリデーションチェック
-	if 50 < utf8.RuneCountInString(pwd) {
+	if constant.PasswordMaxLength < utf8.RuneCountInString(pwd) {
 		return nil, fmt.Errorf("cannot use password over 51 char")
 	}
 	return &Password{value: pwd}, nil
