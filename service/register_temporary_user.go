@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/daikiku10/go-test-app-backend/domain"
+	"github.com/daikiku10/go-test-app-backend/domain/model"
 	"github.com/daikiku10/go-test-app-backend/domain/service"
 	"github.com/daikiku10/go-test-app-backend/repository"
 )
@@ -52,6 +53,17 @@ func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, inp
 	if existMail {
 		return "", fmt.Errorf("failed to register: %q", repository.ErrAlreadyEntry)
 	}
+
+	// パスワードのハッシュ化
+	password, err := model.NewPassword(input.Password)
+	if err != nil {
+		return "", fmt.Errorf("cannot create password object: %w", err)
+	}
+	hashPassword, err := password.CreateHash()
+	if err != nil {
+		return "", fmt.Errorf("cannot create hash password: %w", err)
+	}
+	fmt.Println(hashPassword)
 
 	// 成功時
 	return "sessionIDTest", nil
