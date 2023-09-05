@@ -8,6 +8,7 @@ import (
 	"github.com/daikiku10/go-test-app-backend/domain/model"
 	"github.com/daikiku10/go-test-app-backend/domain/service"
 	"github.com/daikiku10/go-test-app-backend/repository"
+	"github.com/google/uuid"
 )
 
 type ServiceRegisterTemporaryUserInput struct {
@@ -64,6 +65,16 @@ func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, inp
 		return "", fmt.Errorf("cannot create hash password: %w", err)
 	}
 	fmt.Println(hashPassword)
+
+	// ユーザー情報をキャッシュに保存
+	tempUserInfo := model.NewTemporaryUserString("")
+	// キャッシュサーバーに保存するキーの作成
+	uid := uuid.New().String()
+	// 確認コードの作成
+	confirmCode := model.NewConfirmCode().String()
+	key := fmt.Sprintf("user:%s:%s", confirmCode, uid)
+	// キャッシュサーバーに保存するvalueを作成
+	userString := tempUserInfo.Join(input.FirstName, input.FirstNameKana, input.FamilyName, input.FamilyNameKana, input.Email, hashPassword)
 
 	// 成功時
 	return "sessionIDTest", nil
