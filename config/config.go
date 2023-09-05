@@ -10,6 +10,8 @@ type Config struct {
 	DBUser        string `env:"DB_USER" envDefault:"go_test"`
 	DBPassword    string `env:"DB_PASSWORD" envDefault:"password"`
 	DBName        string `env:"DB_NAME" envDefault:"go_database"`
+	RedisHost     string `env:"REDIS_HOST" envDefault:"cache"`
+	RedisPort     int    `env:"REDIS_PORT" envDefault:"6379"`
 	FrontEndpoint string `env:"FRONT_ENDPOINT" envDefault:"http://localhost:3000"`
 }
 
