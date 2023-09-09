@@ -38,3 +38,12 @@ func (kvs *KVS) Get(ctx context.Context, key string) (string, error) {
 	}
 	return result, err
 }
+
+// 値の削除
+func (kvs *KVS) Delete(ctx context.Context, key string) error {
+	_, err := kvs.Cli.Del(ctx, key).Result()
+	if err != nil {
+		return fmt.Errorf("failed to delete by %q: %w", key, ErrNotFoundSession)
+	}
+	return nil
+}

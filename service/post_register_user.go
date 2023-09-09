@@ -33,5 +33,16 @@ func (pru *PostRegisterUser) PostRegisterUser(ctx context.Context, input Service
 	}
 	fmt.Println(u)
 
+	// 復元後にキャッシュからユーザー情報を削除する
+	if err = pru.Cache.Delete(ctx, key); err != nil {
+		return nil, "", fmt.Errorf("cannot delete user in cache: %w", err)
+	}
+
+	// 復元したユーザーぞ情報を解析
+
+	// DBへ保存する
+
+	// JWTを作成する
+
 	return nil, "", nil
 }
