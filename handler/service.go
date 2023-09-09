@@ -11,5 +11,5 @@ type RegisterTemporaryUserService interface {
 }
 
 type PostRegisterUserService interface {
-	PostRegisterUser()
+	PostRegisterUser(input service.ServicePostRegisterUserInput)
 }
