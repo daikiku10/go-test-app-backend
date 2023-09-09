@@ -74,6 +74,7 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 		))
 	if err != nil {
 		APIErrorResponse(ctx, http.StatusBadRequest, errorTitle, err.Error())
+		return
 	}
 
 	// サービス層のInputを作成する
