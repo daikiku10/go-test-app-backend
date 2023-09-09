@@ -45,7 +45,6 @@ func NewRegisterTemporaryUser(rep domain.UserRepo, db repository.Queryer, cache 
 // @returns
 // temporaryUserId 一時保存したユーザーを識別するID
 func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, input ServiceRegisterTemporaryUserInput) (string, error) {
-	fmt.Println("サービス層：仮ユーザー登録API")
 	// ユーザードメインサービス
 	userService := service.NewUserService(rtu.Repo)
 
@@ -84,6 +83,10 @@ func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, inp
 		return "", fmt.Errorf("failed to save in cache: %w", err)
 	}
 
+	// TODO: メール送信処理を行う
+	// 今はログに出す
+	fmt.Println(confirmCode)
+
 	// 成功時
-	return "sessionIDTest", nil
+	return uid, nil
 }

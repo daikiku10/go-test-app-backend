@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 
 	"github.com/daikiku10/go-test-app-backend/constant"
+	"github.com/daikiku10/go-test-app-backend/repository"
 	"github.com/daikiku10/go-test-app-backend/service"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -22,7 +23,6 @@ func NewRegisterTemporaryUser(rtu RegisterTemporaryUserService) *RegisterTempora
 //
 // @param ctx ginContext
 func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
-	fmt.Println("ハンドラー層：仮ユーザー登録API")
 	// エラータイトル
 	const errorTitle = "ユーザー仮登録エラー"
 	// クライアント リクエスト情報
@@ -34,8 +34,6 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 		Password       string `json:"password"`
 		Email          string `json:"email"`
 	}
-
-	fmt.Printf("%+v", &input)
 
 	// クライアントから正しいパラメータでデータが送られていない
 	if err := ctx.ShouldBindJSON(&input); err != nil {
@@ -89,12 +87,19 @@ func (rtu *RegisterTemporaryUser) ServerHTTP(ctx *gin.Context) {
 	}
 
 	// サービス層へ依頼
-	fmt.Printf("%+v", &input)
 	sessionID, err := rtu.Service.RegisterTemporaryUser(ctx, sInput)
+	if err != nil {
+		if errors.Is(err, repository.ErrAlreadyEntry) {
+			APIErrorResponse(ctx, http.StatusConflict, errorTitle, repository.ErrAlreadyEntry.Error())
+			return
+		}
+		APIErrorResponse(ctx, http.StatusInternalServerError, errorTitle, err.Error())
+		return
+	}
 
-	// サービス層のエラー処理
-	fmt.Println(sessionID)
-	fmt.Println(err)
 	// 成功
-
+	rsp := struct {
+		ID string `json:"temporaryUserId"`
+	}{ID: sessionID}
+	APIResponse(ctx, http.StatusCreated, "本登録メールを送信しました。", rsp)
 }
