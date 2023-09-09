@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/daikiku10/go-test-app-backend/constant"
 	"github.com/daikiku10/go-test-app-backend/domain"
 	"github.com/daikiku10/go-test-app-backend/domain/model"
 	"github.com/daikiku10/go-test-app-backend/domain/service"
@@ -21,12 +23,13 @@ type ServiceRegisterTemporaryUserInput struct {
 }
 
 type RegisterTemporaryUser struct {
-	Repo domain.UserRepo
-	DB   repository.Queryer
+	Repo  domain.UserRepo
+	DB    repository.Queryer
+	Cache domain.Cache
 }
 
-func NewRegisterTemporaryUser(rep domain.UserRepo, db repository.Queryer) *RegisterTemporaryUser {
-	return &RegisterTemporaryUser{Repo: rep, DB: db}
+func NewRegisterTemporaryUser(rep domain.UserRepo, db repository.Queryer, cache domain.Cache) *RegisterTemporaryUser {
+	return &RegisterTemporaryUser{Repo: rep, DB: db, Cache: cache}
 }
 
 // ユーザー仮登録サービス
@@ -64,9 +67,8 @@ func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, inp
 	if err != nil {
 		return "", fmt.Errorf("cannot create hash password: %w", err)
 	}
-	fmt.Println(hashPassword)
 
-	// ユーザー情報をキャッシュに保存
+	// キャッシュに保存するユーザー情報の作成
 	tempUserInfo := model.NewTemporaryUserString("")
 	// キャッシュサーバーに保存するキーの作成
 	uid := uuid.New().String()
@@ -75,6 +77,12 @@ func (rtu *RegisterTemporaryUser) RegisterTemporaryUser(ctx context.Context, inp
 	key := fmt.Sprintf("user:%s:%s", confirmCode, uid)
 	// キャッシュサーバーに保存するvalueを作成
 	userString := tempUserInfo.Join(input.FirstName, input.FirstNameKana, input.FamilyName, input.FamilyNameKana, input.Email, hashPassword)
+
+	// キャッシュに保存する
+	err = rtu.Cache.Save(ctx, key, userString, time.Duration(constant.ConfirmCodeExpiration_m))
+	if err != nil {
+		return "", fmt.Errorf("failed to save in cache: %w", err)
+	}
 
 	// 成功時
 	return "sessionIDTest", nil

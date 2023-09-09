@@ -23,12 +23,17 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	clocker := clock.RealClocker{}
 	// レポジトリ作成
 	rep := repository.NewRepository(clocker)
+	// トークンを保存するキャッシュ(redis)
+	cache, err := repository.NewKVS(ctx, cfg)
+	if err != nil {
+		return err
+	}
 
 	// ルーティングの設定
 	groupRoute := router.Group("/api/v1")
 
 	// 仮ユーザー登録
-	registerTemporaryUserService := service.NewRegisterTemporaryUser(rep, db)
+	registerTemporaryUserService := service.NewRegisterTemporaryUser(rep, db, cache)
 	registerTemporaryUserHandler := handler.NewRegisterTemporaryUser(registerTemporaryUserService)
 	groupRoute.POST("temporary_user", registerTemporaryUserHandler.ServerHTTP)
 	// ユーザー登録
