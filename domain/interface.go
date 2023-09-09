@@ -16,4 +16,5 @@ type UserRepo interface {
 // Cache(redis)に対するインターフェース
 type Cache interface {
 	Save(ctx context.Context, key, value string, minute time.Duration) error
+	Get(ctx context.Context, key string) (string, error)
 }

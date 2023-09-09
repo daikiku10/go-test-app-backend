@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"github.com/daikiku10/go-test-app-backend/domain/model"
 	"github.com/daikiku10/go-test-app-backend/service"
 )
 
@@ -11,5 +12,5 @@ type RegisterTemporaryUserService interface {
 }
 
 type PostRegisterUserService interface {
-	PostRegisterUser(input service.ServicePostRegisterUserInput)
+	PostRegisterUser(ctx context.Context, input service.ServicePostRegisterUserInput) (*model.User, string, error)
 }

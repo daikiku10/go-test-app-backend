@@ -56,7 +56,7 @@ func (pru *PostRegisterUser) ServerHTTP(ctx *gin.Context) {
 	}
 
 	// サービス層へ依頼
-	pru.Service.PostRegisterUser(sInput)
+	pru.Service.PostRegisterUser(ctx, sInput)
 
 	// TODO: 成功
 }
