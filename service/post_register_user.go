@@ -38,9 +38,20 @@ func (pru *PostRegisterUser) PostRegisterUser(ctx context.Context, input Service
 		return nil, "", fmt.Errorf("cannot delete user in cache: %w", err)
 	}
 
-	// 復元したユーザーぞ情報を解析
+	// 復元したユーザー情報を解析
+	temporaryUser := model.NewTemporaryUserString(u)
+	firstName, firstNameKana, familyName, familyNameKana, email, password := temporaryUser.Split()
 
 	// DBへ保存する
+	user := &model.User{
+		FirstName:      firstName,
+		FirstNameKana:  firstNameKana,
+		FamilyName:     familyName,
+		FamilyNameKana: familyNameKana,
+		Email:          email,
+		Password:       password,
+	}
+	fmt.Println(user)
 
 	// JWTを作成する
 
