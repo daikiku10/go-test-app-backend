@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/daikiku10/go-test-app-backend/domain/model"
+	"github.com/daikiku10/go-test-app-backend/repository"
 	"github.com/daikiku10/go-test-app-backend/service"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -56,7 +59,25 @@ func (pru *PostRegisterUser) ServerHTTP(ctx *gin.Context) {
 	}
 
 	// サービス層へ依頼
-	pru.Service.PostRegisterUser(ctx, sInput)
+	u, jwt, err := pru.Service.PostRegisterUser(ctx, sInput)
+	if err != nil {
+		// キャッシュ有効期限切れ
+		if errors.Is(err, repository.ErrNotFoundSession) {
+			APIErrorResponse(ctx, http.StatusUnauthorized, errorTitle, repository.ErrNotFoundSession.Error())
+			return
+		}
+		// 同じメールアドレスが存在する
+		if errors.Is(err, repository.ErrAlreadyEntry) {
+			APIErrorResponse(ctx, http.StatusConflict, errorTitle, repository.ErrAlreadyEntry.Error())
+			return
+		}
+		APIErrorResponse(ctx, http.StatusInternalServerError, errorTitle, err.Error())
+		return
+	}
 
-	// TODO: 成功
+	rsp := struct {
+		ID    model.UserID `json:"userId"`
+		Token string       `json:"accessToken"`
+	}{ID: u.ID, Token: jwt}
+	APIResponse(ctx, http.StatusCreated, "本登録が完了しました。", rsp)
 }
