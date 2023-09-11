@@ -6,6 +6,7 @@ import (
 
 	"github.com/daikiku10/go-test-app-backend/domain"
 	"github.com/daikiku10/go-test-app-backend/domain/model"
+	"github.com/daikiku10/go-test-app-backend/repository"
 )
 
 type ServicePostRegisterUserInput struct {
@@ -13,11 +14,13 @@ type ServicePostRegisterUserInput struct {
 	ConfirmCode     string
 }
 type PostRegisterUser struct {
+	DB    repository.Execer
 	Cache domain.Cache
+	Repo  domain.UserRepo
 }
 
-func NewPostRegisterUser(cache domain.Cache) *PostRegisterUser {
-	return &PostRegisterUser{Cache: cache}
+func NewPostRegisterUser(db repository.Execer, cache domain.Cache, repo domain.UserRepo) *PostRegisterUser {
+	return &PostRegisterUser{DB: db, Cache: cache, Repo: repo}
 }
 
 // ユーザー登録サービス
@@ -31,7 +34,6 @@ func (pru *PostRegisterUser) PostRegisterUser(ctx context.Context, input Service
 	if err != nil {
 		return nil, "", fmt.Errorf("cannot get user in cache: %w", err)
 	}
-	fmt.Println(u)
 
 	// 復元後にキャッシュからユーザー情報を削除する
 	if err = pru.Cache.Delete(ctx, key); err != nil {
@@ -52,8 +54,11 @@ func (pru *PostRegisterUser) PostRegisterUser(ctx context.Context, input Service
 		Password:       password,
 	}
 	fmt.Println(user)
+	if err := pru.Repo.RegisterUser(ctx, pru.DB, user); err != nil {
+		return nil, "", fmt.Errorf("failed to register: %w", err)
+	}
 
 	// JWTを作成する
 
-	return nil, "", nil
+	return user, "", nil
 }

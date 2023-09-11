@@ -2,8 +2,10 @@ package model
 
 import "time"
 
+type UserID int64
+
 type User struct {
-	ID             int64     `json:"id" db:"id"`
+	ID             UserID    `json:"id" db:"id"`
 	FirstName      string    `json:"first_name" db:"first_name"`
 	FirstNameKana  string    `json:"first_name_kana" db:"first_name_kana"`
 	FamilyName     string    `json:"family_name" db:"family_name"`

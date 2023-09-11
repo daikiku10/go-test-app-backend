@@ -37,7 +37,7 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	registerTemporaryUserHandler := handler.NewRegisterTemporaryUser(registerTemporaryUserService)
 	groupRoute.POST("temporary_user", registerTemporaryUserHandler.ServerHTTP)
 	// ユーザー登録
-	postRegisterUserService := service.NewPostRegisterUser(cache)
+	postRegisterUserService := service.NewPostRegisterUser(db, cache, rep)
 	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
 	groupRoute.POST("/user", postRegisterUserHandler.ServerHTTP)
 

@@ -10,6 +10,7 @@ import (
 
 // Userに対するインターフェース
 type UserRepo interface {
+	RegisterUser(ctx context.Context, db repository.Execer, u *model.User) error
 	FindUserByEmail(ctx context.Context, db repository.Queryer, email string) (model.User, error)
 }
 

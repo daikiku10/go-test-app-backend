@@ -2,9 +2,45 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/daikiku10/go-test-app-backend/domain/model"
+	"github.com/go-sql-driver/mysql"
 )
+
+// ユーザー登録
+//
+// @param
+// ユーザー情報
+func (r *Repository) RegisterUser(ctx context.Context, db Execer, u *model.User) error {
+	// 作成時間と更新時間を現在の時間にする。
+	u.CreatedAt = r.Clocker.Now()
+	u.UpdateAt = r.Clocker.Now()
+
+	// sql作成
+	sql := `INSERT INTO users(
+		first_name, first_name_kana, family_name, family_name_kana, email, password, created_at, update_at
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
+	// sql実行
+	result, err := db.ExecContext(ctx, sql, u.FirstName, u.FirstNameKana, u.FamilyName, u.FamilyNameKana, u.Email, u.Password, u.CreatedAt, u.UpdateAt)
+	if err != nil {
+		var mysqlErr *mysql.MySQLError
+		if errors.As(err, &mysqlErr) && mysqlErr.Number == ErrCodeMySQLDuplicateEntry {
+			return fmt.Errorf("cannot create same email user: %w", ErrAlreadyEntry)
+		}
+		return err
+	}
+	// SQLがDBに新しい行を挿入した場合に、その行のIDを取得する。
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	u.ID = model.UserID(id)
+
+	return nil
+}
 
 // メールと一致するユーザーを取得する
 // @params
