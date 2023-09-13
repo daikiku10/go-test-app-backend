@@ -1,5 +1,5 @@
+/auth/certificate/public.pem
+/auth/certificate/secret.pem
 /tmp
 .DS_Store
 .env
-secret.pem
-public.pem
