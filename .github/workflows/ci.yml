@@ -16,7 +16,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: generate secret key in JWT
+    - name: generate secret key in JWT a
       run: | 
         echo "${{ secrets.JWT_SECRET_KEY }}" > ./auth/certificate/secret.pem
         chmod 444 ./auth/certificate/secret.pem
