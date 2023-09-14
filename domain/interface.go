@@ -20,3 +20,8 @@ type Cache interface {
 	Get(ctx context.Context, key string) (string, error)
 	Delete(ctx context.Context, key string) error
 }
+
+// JWTトークンに対するインターフェース
+type TokenGenerator interface {
+	GenerateToken(ctx context.Context, u model.User) ([]byte, error)
+}

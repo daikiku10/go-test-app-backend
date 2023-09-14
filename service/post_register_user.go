@@ -14,13 +14,14 @@ type ServicePostRegisterUserInput struct {
 	ConfirmCode     string
 }
 type PostRegisterUser struct {
-	DB    repository.Execer
-	Cache domain.Cache
-	Repo  domain.UserRepo
+	DB             repository.Execer
+	Cache          domain.Cache
+	Repo           domain.UserRepo
+	TokenGenerator domain.TokenGenerator
 }
 
-func NewPostRegisterUser(db repository.Execer, cache domain.Cache, repo domain.UserRepo) *PostRegisterUser {
-	return &PostRegisterUser{DB: db, Cache: cache, Repo: repo}
+func NewPostRegisterUser(db repository.Execer, cache domain.Cache, repo domain.UserRepo, token domain.TokenGenerator) *PostRegisterUser {
+	return &PostRegisterUser{DB: db, Cache: cache, Repo: repo, TokenGenerator: token}
 }
 
 // ユーザー登録サービス
@@ -53,12 +54,15 @@ func (pru *PostRegisterUser) PostRegisterUser(ctx context.Context, input Service
 		Email:          email,
 		Password:       password,
 	}
-	fmt.Println(user)
 	if err := pru.Repo.RegisterUser(ctx, pru.DB, user); err != nil {
 		return nil, "", fmt.Errorf("failed to register: %w", err)
 	}
 
 	// JWTを作成する
+	jwt, err := pru.TokenGenerator.GenerateToken(ctx, *user)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to generate JWT: %w", err)
+	}
 
-	return user, "", nil
+	return user, string(jwt), nil
 }

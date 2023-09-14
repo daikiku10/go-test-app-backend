@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/daikiku10/go-test-app-backend/auth"
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/handler"
 	"github.com/daikiku10/go-test-app-backend/repository"
@@ -23,12 +24,16 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	clocker := clock.RealClocker{}
 	// レポジトリ作成
 	rep := repository.NewRepository(clocker)
-	// トークンを保存するキャッシュ(redis)
+	// 一時保存するキャッシュ(redis)の作成
 	cache, err := repository.NewKVS(ctx, cfg)
 	if err != nil {
 		return err
 	}
-
+	// アクセストークンの生成
+	jwt, err := auth.NewJWTer(cache, clocker)
+	if err != nil {
+		return err
+	}
 	// ルーティングの設定
 	groupRoute := router.Group("/api/v1")
 
@@ -37,7 +42,7 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	registerTemporaryUserHandler := handler.NewRegisterTemporaryUser(registerTemporaryUserService)
 	groupRoute.POST("temporary_user", registerTemporaryUserHandler.ServerHTTP)
 	// ユーザー登録
-	postRegisterUserService := service.NewPostRegisterUser(db, cache, rep)
+	postRegisterUserService := service.NewPostRegisterUser(db, cache, rep, jwt)
 	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
 	groupRoute.POST("/user", postRegisterUserHandler.ServerHTTP)
 
