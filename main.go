@@ -58,6 +58,10 @@ func run(ctx context.Context) error {
 	if err := routers.SetRouting(ctx, db, router, cfg); err != nil {
 		return err
 	}
+	// ルーティングの初期化(認証あり)
+	if err := routers.SetAuthRouting(ctx, db, router, cfg); err != nil {
+		return err
+	}
 
 	// サーバー起動
 	return router.Run(fmt.Sprintf(":%d", cfg.Port))

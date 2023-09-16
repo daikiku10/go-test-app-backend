@@ -4,11 +4,13 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/daikiku10/go-test-app-backend/constant"
 	"github.com/daikiku10/go-test-app-backend/domain/model"
 	"github.com/daikiku10/go-test-app-backend/utils/clock"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
@@ -84,4 +86,29 @@ func (j *JWTer) GenerateToken(ctx context.Context, u model.User) ([]byte, error)
 		return nil, err
 	}
 	return signed, nil
+}
+
+// トークンを取得し、解析する
+func (j *JWTer) GetToken(ctx context.Context, r *http.Request) (jwt.Token, error) {
+	// リクエストからアクセストークンを取得して解析する
+	token, err := jwt.ParseRequest(
+		r,
+		jwt.WithKey(jwa.RS256, j.PublicKey),
+		jwt.WithValidate(false),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
+// アクセストークンを解析し、contextにUserIDとEmailをセットする
+func (j *JWTer) FillContext(ctx *gin.Context) error {
+	// トークンを解析する
+	token, err := j.GetToken(ctx.Request.Context(), ctx.Request)
+	if err != nil {
+		return err
+	}
+	fmt.Println(token)
+	return nil
 }
