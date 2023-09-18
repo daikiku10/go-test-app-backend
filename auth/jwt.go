@@ -133,5 +133,10 @@ func (j *JWTer) FillContext(ctx *gin.Context) error {
 		return fmt.Errorf("FillContext: expired token %s because login another", jwi)
 	}
 
+	// 有効なアクセストークンを確認できたため、有効期限を延長する
+	if err := j.Store.Expired(ctx, uid, time.Duration(constant.TokenExpiration_m)); err != nil {
+		return fmt.Errorf("FillContext: can not be extended: %w", err)
+	}
+
 	return nil
 }

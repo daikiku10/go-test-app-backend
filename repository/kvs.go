@@ -47,3 +47,12 @@ func (kvs *KVS) Delete(ctx context.Context, key string) error {
 	}
 	return nil
 }
+
+// 有効期限を延長する
+func (kvs *KVS) Expired(ctx context.Context, key string, minute time.Duration) error {
+	_, err := kvs.Cli.Expire(ctx, key, minute*time.Minute).Result()
+	if err != nil {
+		return fmt.Errorf("Expired: failed to expire by %q: %w", key, ErrNotFoundSession)
+	}
+	return nil
+}
