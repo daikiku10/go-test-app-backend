@@ -109,6 +109,29 @@ func (j *JWTer) FillContext(ctx *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(token)
+
+	// 有効期限が切れていないか確認する
+	if err := jwt.Validate(token, jwt.WithClock(j.Clocker)); err != nil {
+		return fmt.Errorf("FillContext: failed to validate token: %w", err)
+	}
+
+	// トークンからUserIDを取得する
+	id, ok := token.Get(UserID)
+	if !ok {
+		return fmt.Errorf("FillContext: not found %s", UserID)
+	}
+	uid := fmt.Sprintf("%v", id)
+	// キャッシュ(redis)からトークンを取得する
+	jwi, err := j.Store.Get(ctx, uid)
+	if err != nil {
+		// エラーの場合はキャッシュ側が有効期限切れ
+		return fmt.Errorf("FillContext: %v expired %w", id, err)
+	}
+
+	// 他のログインを検査
+	if jwi != token.JwtID() {
+		return fmt.Errorf("FillContext: expired token %s because login another", jwi)
+	}
+
 	return nil
 }
