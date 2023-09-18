@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/daikiku10/go-test-app-backend/constant"
@@ -138,5 +139,14 @@ func (j *JWTer) FillContext(ctx *gin.Context) error {
 		return fmt.Errorf("FillContext: can not be extended: %w", err)
 	}
 
+	// contextにユーザー情報を追加する
+	iniUid, _ := strconv.ParseInt(uid, 10, 64)
+	ctx.Set(UserID, model.UserID(iniUid))
+	mail, ok := token.Get(Email)
+	if !ok {
+		ctx.Set(Email, "")
+		return nil
+	}
+	ctx.Set(Email, mail)
 	return nil
 }
