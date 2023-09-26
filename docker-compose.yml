@@ -19,6 +19,8 @@ services:
     tty: true
     ports:
       - 8080:8080
+    networks:
+      - mynetwork
     # dbを先に起動する
     depends_on:
       - "db"
@@ -36,6 +38,8 @@ services:
       - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
     ports:
      - 3306:3306
+    networks:
+      - mynetwork
   cache:
     image: "redis:latest"
     container_name: redis
@@ -43,11 +47,18 @@ services:
       - "36379:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - mynetwork
   panel:
     image: "adminer:latest"
     # restart: always
     ports:
       - 8082:8080
+    networks:
+      - mynetwork
 volumes:
   db-data:
   redis-data:
+networks:
+  mynetwork:
+    external: true
