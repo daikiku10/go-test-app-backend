@@ -12,7 +12,9 @@ COPY /go.mod ./
 COPY /go.sum ./
 
 RUN go install github.com/cosmtrek/air@latest \
-  && go install github.com/k0kubun/sqldef/cmd/mysqldef@latest
+  && go install github.com/k0kubun/sqldef/cmd/mysqldef@latest \
+  && go install golang.org/x/tools/cmd/goimports@latest \
+  && go install github.com/matryer/moq@latest
 
 RUN go mod download
 

@@ -24,6 +24,12 @@ dry-migrate: ## マイグレーションテスト実行(実行されない)
 migrate:  ## マイグレーション実行
 	mysqldef -u ${DB_USER} -p ${DB_PASSWORD} -h ${DB_HOST} -P ${DB_PORT} ${DB_NAME} < ./_tools/mysql/schema.sql
 
+.PHONY: moq
+moq: ## mockの作成(コンテナ内で実行すること)
+	# サービス層のモック作成
+	@docker compose exec app moq -fmt goimports -out ./handler/moq_test.go ./handler \
+		RegisterTemporaryUserService
+
 help: ## コマンド説明一覧の表示
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
