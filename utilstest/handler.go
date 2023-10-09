@@ -1,4 +1,4 @@
-package testing
+package utilstest
 
 import (
 	"os"

@@ -1,14 +1,18 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/daikiku10/go-test-app-backend/repository"
 	"github.com/daikiku10/go-test-app-backend/service"
+	"github.com/daikiku10/go-test-app-backend/utilstest"
+	"github.com/gin-gonic/gin"
 )
 
 func TestRegisterTemporaryUser(t *testing.T) {
@@ -74,7 +78,13 @@ func TestRegisterTemporaryUser(t *testing.T) {
 				return "", errors.New("error from mock")
 			}
 
-			// テストデータの挿入
+			// テストデータの挿入する
+			// gin Context の生成
+			c, _ := gin.CreateTestContext(httptest.NewRecorder())
+			// リクエストの生成
+			req, _ := http.NewRequest("POST", "/temporary_user", bytes.NewReader(utilstest.LoadFile(t, test.reqFile)))
+			// リクエスト情報をコンテキストに入れる
+			c.Request = req
 
 			// リクエストの送信
 
