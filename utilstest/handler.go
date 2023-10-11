@@ -1,11 +1,42 @@
 package utilstest
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
+
+// テスト用
+// アサーション関数(JSON)
+// @params
+// t テストユーティリティ
+// want 検証のレスポンス
+// got 実際のレスポンス
+func AssertJSON(t *testing.T, want, got []byte) {
+	// テスト関数がエラーの発生源であることを示すために指定する
+	t.Helper()
+
+	// interface{}
+	var jw, jg any
+	// JSONデータを構造体に変換する
+	// wantを変換
+	if err := json.Unmarshal(want, &jw); err != nil {
+		t.Fatalf("cannot unmarshal want %q: %v", want, err)
+	}
+	// gotを変換
+	if err := json.Unmarshal(got, &jg); err != nil {
+		t.Fatalf("cannot unmarshal got %q: %v", got, err)
+	}
+
+	// wantとgotの差分
+	if diff := cmp.Diff(jw, jg); diff != "" {
+		t.Errorf("got differs: (-got +want)\n%s", diff)
+	}
+}
 
 // テスト用
 // アサーション関数
@@ -34,7 +65,8 @@ func AssertResponse(t *testing.T, got *http.Response, status int, body []byte) {
 		// AssertJSONを呼ぶ必要はない。
 		return
 	}
-	// AssertJSON(t, body, gb)
+	// JSONでの検証
+	AssertJSON(t, body, gb)
 }
 
 // テスト用
