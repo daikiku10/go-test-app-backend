@@ -1,0 +1,8 @@
+{
+  "firstName": "test",
+  "firstNameKana": "テスト",
+  "familyName": "taro",
+  "familyNameKana": "タロウ",
+  "password": "test-pass",
+  "email": "test@test.xx.yy"
+}

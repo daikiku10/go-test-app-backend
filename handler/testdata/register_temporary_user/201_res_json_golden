@@ -1,0 +1,7 @@
+{
+  "statusCode": 201,
+  "message": "本登録メールを送信しました。",
+  "data": {
+    "temporaryUserId": "sessionId"
+  }
+}
