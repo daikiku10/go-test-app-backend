@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/daikiku10/go-test-app-backend/auth"
 	"github.com/daikiku10/go-test-app-backend/config"
@@ -48,6 +49,12 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
+		rsp := struct {
+			ID string `json:"temporaryUserId"`
+		}{ID: "テストIDだよ！！！！！"}
+
+		handler.APIResponse(ctx, http.StatusCreated, "テストAPI成功しました。", rsp)
+
 	})
 	return nil
 }

@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/daikiku10/go-test-app-backend/auth"
 	"github.com/daikiku10/go-test-app-backend/config"
@@ -36,7 +37,13 @@ func SetAuthRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *c
 	// ルーティング設定
 	groupRoute := router.Group("api/v1").Use(handler.AuthMiddleware(jwt))
 
-	groupRoute.GET("/test/d")
+	groupRoute.GET("/test/d", func(ctx *gin.Context) {
+		rsp := struct {
+			Test string `json:"testData"`
+		}{Test: "認証通ったね！"}
+
+		handler.APIResponse(ctx, http.StatusCreated, "認証成功後のAPI成功しました。", rsp)
+	})
 
 	return nil
 }
