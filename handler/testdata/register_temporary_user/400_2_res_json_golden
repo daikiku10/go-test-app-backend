@@ -1,0 +1,5 @@
+{
+  "statusCode": 400,
+  "title": "ユーザー仮登録エラー",
+  "message": "invalid character '/' after object key:value pair"
+}
