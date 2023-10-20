@@ -64,7 +64,7 @@ func TestRegisterTemporaryUser(t *testing.T) {
 	for k, test := range tests {
 
 		t.Run(k, func(t *testing.T) {
-			// TODO: パラレル
+			t.Parallel()
 			// サービス層のモック定義
 			moq := &RegisterTemporaryUserServiceMock{}
 			moq.RegisterTemporaryUserFunc = func(ctx context.Context, input service.ServiceRegisterTemporaryUserInput) (string, error) {
