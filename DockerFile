@@ -14,7 +14,9 @@ COPY /go.sum ./
 RUN go install github.com/cosmtrek/air@latest \
   && go install github.com/k0kubun/sqldef/cmd/mysqldef@latest \
   && go install golang.org/x/tools/cmd/goimports@latest \
-  && go install github.com/matryer/moq@latest
+  && go install github.com/matryer/moq@latest \
+  && go install github.com/volatiletech/sqlboiler/v4@latest \
+  && go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
 
 RUN go mod download
 
