@@ -46,6 +46,9 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	postRegisterUserService := service.NewPostRegisterUser(db, cache, rep, jwt)
 	postRegisterUserHandler := handler.NewPostRegisterUser(postRegisterUserService)
 	groupRoute.POST("/user", postRegisterUserHandler.ServerHTTP)
+	// ユーザー登録(SQLBoilerを使用して)
+	createUserService := service.NewCreateUser(db, rep)
+	groupRoute.GET("/user/d", createUserService.CreateUser)
 
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
