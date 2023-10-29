@@ -33,7 +33,7 @@ func NewDB(ctx context.Context, cfg *config.Config) (*sqlx.DB, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	// global connection setting
+	// クエリのロギング
 	boil.SetDB(db)
 	boil.DebugMode = true
 
