@@ -11,3 +11,11 @@ CREATE TABLE `users` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uix_email` (`email`) USING BTREE
 ) Engine=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='ユーザー';
+
+CREATE TABLE `groups` (
+    `id`                      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'グループの識別子',
+    `name`                    VARCHAR(256) NOT NULL COMMENT 'グループ名',
+    `created_at`              DATETIME(6) NOT NULL COMMENT 'レコード作成日時',
+    `update_at`               DATETIME(6) NOT NULL COMMENT 'レコード修正日時',
+    PRIMARY KEY (`id`)
+) Engine=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='グループ';
