@@ -5,12 +5,15 @@ import (
 	"time"
 
 	"github.com/daikiku10/go-test-app-backend/domain/model"
+	"github.com/daikiku10/go-test-app-backend/models"
 	"github.com/daikiku10/go-test-app-backend/repository"
+	"github.com/jmoiron/sqlx"
 )
 
 // Userに対するインターフェース
 type UserRepo interface {
 	RegisterUser(ctx context.Context, db repository.Execer, u *model.User) error
+	RegisterUserBoiler(ctx context.Context, u *models.User, db *sqlx.DB) error
 	FindUserByEmail(ctx context.Context, db repository.Queryer, email string) (model.User, error)
 }
 
