@@ -62,6 +62,16 @@ func (r *Repository) RegisterUserBoiler(ctx context.Context, u *models.User, db 
 	return nil
 }
 
+// ユーザー一覧取得(SQLBoiler)
+func (r *Repository) GetAllUsers(ctx context.Context, db *sqlx.DB) ([]*models.User, error) {
+	users, err := models.Users().All(ctx, db)
+	if err != nil {
+		return []*models.User{}, err
+	}
+
+	return users, nil
+}
+
 // メールと一致するユーザーを取得する
 // @params
 // ctx context
