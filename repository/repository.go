@@ -9,6 +9,7 @@ import (
 	"github.com/daikiku10/go-test-app-backend/config"
 	"github.com/daikiku10/go-test-app-backend/utils/clock"
 	"github.com/jmoiron/sqlx"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 // DBへの接続
@@ -32,6 +33,10 @@ func NewDB(ctx context.Context, cfg *config.Config) (*sqlx.DB, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	// global connection setting
+	boil.SetDB(db)
+	boil.DebugMode = true
+
 	// Openは実際に接続テストが行われない。
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
