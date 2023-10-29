@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/daikiku10/go-test-app-backend/domain"
 	"github.com/daikiku10/go-test-app-backend/models"
@@ -21,6 +20,12 @@ func NewCreateUser(db *sqlx.DB, repo domain.UserRepo) *CreateUser {
 
 // ユーザー登録
 func (c *CreateUser) CreateUser(ctx *gin.Context) {
+	// トランザクション開始
+	tx, err := c.DB.BeginTx(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	u := &models.User{
 		FamilyName:     "test",
 		FamilyNameKana: "テスト",
@@ -29,10 +34,11 @@ func (c *CreateUser) CreateUser(ctx *gin.Context) {
 		Email:          "testMail",
 		Password:       "pass",
 	}
-	err := c.Repo.RegisterUserBoiler(ctx, u, c.DB)
-	if err != nil {
-		log.Fatalln(err)
+	if err := c.Repo.RegisterUserBoiler(ctx, u, c.DB); err != nil {
+		tx.Rollback()
+		ctx.JSON(400, err.Error())
+		return
 	}
-
+	tx.Commit()
 	fmt.Println("登録成功です！")
 }
