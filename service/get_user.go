@@ -22,12 +22,10 @@ type UserByID struct {
 }
 
 type GetUserResponse struct {
-	ID             int    `json:"id"`
-	FirstName      string `json:"firstName"`
-	FirstNameKana  string `json:"firstNameKana"`
-	FamilyName     string `json:"FamilyName"`
-	FamilyNameKana string `json:"FamilyNameKana"`
-	MailAddress    string `json:"mailAddress"`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	NameKana    string `json:"nameKana"`
+	MailAddress string `json:"mailAddress"`
 }
 
 func NewGetUser(db *sqlx.DB, repo domain.UserRepo) *GetUser {
@@ -48,14 +46,16 @@ func (c *GetUser) GetUser(ctx *gin.Context) {
 		return
 	}
 
+	// 名前の結合, 半角スペースあり
+	n := u.FamilyName + " " + u.FirstName
+	nk := u.FamilyNameKana + " " + u.FirstNameKana
+
 	// レスポンス作成
 	res := GetUserResponse{
-		ID:             int(u.ID),
-		FirstName:      u.FirstName,
-		FirstNameKana:  u.FirstNameKana,
-		FamilyName:     u.FamilyName,
-		FamilyNameKana: u.FamilyNameKana,
-		MailAddress:    u.Email,
+		ID:          int(u.ID),
+		Name:        n,
+		NameKana:    nk,
+		MailAddress: u.Email,
 	}
 	ctx.JSON(http.StatusOK, res)
 	fmt.Println("ユーザー情報取得成功です！")
