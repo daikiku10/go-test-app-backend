@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 // ユーザー登録
@@ -70,6 +72,21 @@ func (r *Repository) GetAllUsers(ctx context.Context, db *sqlx.DB) ([]*models.Us
 	}
 
 	return users, nil
+}
+
+// ユーザー情報取得(SQLBoiler)
+func (r *Repository) GetUserByID(ctx context.Context, db *sqlx.DB, tuID string) (*models.User, error) {
+	user, err := models.Users(
+		qm.Where("id=?", tuID),
+	).One(ctx, db)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &models.User{}, errors.New("データが見つかりませんでした。")
+		}
+		return &models.User{}, err
+	}
+
+	return user, nil
 }
 
 // メールと一致するユーザーを取得する
