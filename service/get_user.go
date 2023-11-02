@@ -38,6 +38,7 @@ func (c *GetUser) GetUser(ctx *gin.Context) {
 	uID := ctx.Query("userId")
 	if uID == "" {
 		ctx.JSON(400, "不正なパラメーターです。")
+		return
 	}
 
 	u, err := c.Repo.GetUserByID(ctx, c.DB, uID)
