@@ -89,6 +89,30 @@ func (r *Repository) GetUserByID(ctx context.Context, db *sqlx.DB, tuID string) 
 	return user, nil
 }
 
+// ユーザー情報更新(SQLBoiler)
+func (r *Repository) UpdateUserByID(ctx context.Context, db *sqlx.DB, input model.InputUpdateUserByID) error {
+	// 更新対象ユーザーの取得
+	user, err := models.Users(
+		qm.Where("id=?", input.UserID),
+	).One(ctx, db)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return errors.New("データが見つかりませんでした。")
+		}
+		return err
+	}
+	// 値の更新
+	user.FirstName = input.FirstName
+	user.UpdateAt = r.Clocker.Now()
+	// DBへの更新
+	rowsAft, err := user.Update(ctx, db, boil.Infer())
+	if err != nil {
+		return err
+	}
+	fmt.Println(rowsAft)
+	return nil
+}
+
 // メールと一致するユーザーを取得する
 // @params
 // ctx context

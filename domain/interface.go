@@ -16,6 +16,7 @@ type UserRepo interface {
 	RegisterUserBoiler(ctx context.Context, u *models.User, db *sqlx.DB) error
 	GetAllUsers(ctx context.Context, db *sqlx.DB) ([]*models.User, error)
 	GetUserByID(ctx context.Context, db *sqlx.DB, tuID string) (*models.User, error)
+	UpdateUserByID(ctx context.Context, db *sqlx.DB, input model.InputUpdateUserByID) error
 	// SQLBoilerではない
 	RegisterUser(ctx context.Context, db repository.Execer, u *model.User) error
 	FindUserByEmail(ctx context.Context, db repository.Queryer, email string) (model.User, error)

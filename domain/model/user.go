@@ -17,3 +17,9 @@ type User struct {
 }
 
 type Users []*User
+
+// ユーザー情報更新APIのリクエストデータ
+type InputUpdateUserByID struct {
+	UserID    int
+	FirstName string
+}
