@@ -58,6 +58,9 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	// ユーザー情報更新
 	updateUserService := service.NewUpdateUser(db, rep)
 	groupRoute.PUT("/user/d", updateUserService.UpdateUser)
+	// ユーザー削除
+	deleteUserService := service.NewDeleteUser(db, rep)
+	groupRoute.DELETE("user/d", deleteUserService.DeleteUser)
 
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
