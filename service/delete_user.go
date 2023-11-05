@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/daikiku10/go-test-app-backend/domain"
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,27 @@ func NewDeleteUser(db *sqlx.DB, repo domain.UserRepo) *DeleteUser {
 	return &DeleteUser{DB: db, Repo: repo}
 }
 
-// ユーザー情報更新
+// ユーザー削除
 func (c *DeleteUser) DeleteUser(ctx *gin.Context) {
+	// クエリパラメータの取得
+	uID := ctx.Query("userId")
+	if uID == "" {
+		ctx.JSON(400, "不正なパラメーターです。")
+		return
+	}
+
+	err := c.Repo.DeleteUserByID(ctx, c.DB, uID)
+	if err != nil {
+		ctx.JSON(400, err.Error())
+		return
+	}
+	// レスポンス作成
+	res := struct {
+		ID string `json:"userID"`
+	}{
+		ID: uID,
+	}
+
+	ctx.JSON(http.StatusOK, res)
 	fmt.Printf("ユーザー削除成功です！")
 }

@@ -113,6 +113,27 @@ func (r *Repository) UpdateUserByID(ctx context.Context, db *sqlx.DB, input mode
 	return nil
 }
 
+// ユーザー削除(SQLBoiler)
+func (r *Repository) DeleteUserByID(ctx context.Context, db *sqlx.DB, tuID string) error {
+	// 更新対象ユーザーの取得
+	user, err := models.Users(
+		qm.Where("id=?", tuID),
+	).One(ctx, db)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return errors.New("データが見つかりませんでした。")
+		}
+		return err
+	}
+	// ユーザーの削除
+	rowsAft, err := user.Delete(ctx, db)
+	if err != nil {
+		return err
+	}
+	fmt.Println(rowsAft)
+	return nil
+}
+
 // メールと一致するユーザーを取得する
 // @params
 // ctx context
