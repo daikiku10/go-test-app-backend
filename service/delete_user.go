@@ -19,7 +19,7 @@ func NewDeleteUser(db *sqlx.DB, repo domain.UserRepo) *DeleteUser {
 }
 
 // ユーザー削除
-func (c *DeleteUser) DeleteUser(ctx *gin.Context) {
+func (d *DeleteUser) DeleteUser(ctx *gin.Context) {
 	// クエリパラメータの取得
 	uID := ctx.Query("userId")
 	if uID == "" {
@@ -27,7 +27,7 @@ func (c *DeleteUser) DeleteUser(ctx *gin.Context) {
 		return
 	}
 
-	err := c.Repo.DeleteUserByID(ctx, c.DB, uID)
+	err := d.Repo.DeleteUserByID(ctx, d.DB, uID)
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return

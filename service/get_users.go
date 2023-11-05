@@ -30,8 +30,8 @@ func NewGetUsers(db *sqlx.DB, repo domain.UserRepo) *GetUsers {
 }
 
 // ユーザー一覧取得
-func (c *GetUsers) GetUsers(ctx *gin.Context) {
-	users, err := c.Repo.GetAllUsers(ctx, c.DB)
+func (g *GetUsers) GetUsers(ctx *gin.Context) {
+	users, err := g.Repo.GetAllUsers(ctx, g.DB)
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return

@@ -20,7 +20,7 @@ func NewUpdateUser(db *sqlx.DB, repo domain.UserRepo) *UpdateUser {
 }
 
 // ユーザー情報更新
-func (c *UpdateUser) UpdateUser(ctx *gin.Context) {
+func (u *UpdateUser) UpdateUser(ctx *gin.Context) {
 	// リクエスト情報
 	var input struct {
 		UserID    int    `json:"userId"`
@@ -32,7 +32,7 @@ func (c *UpdateUser) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.Repo.UpdateUserByID(ctx, c.DB, model.InputUpdateUserByID(input)); err != nil {
+	if err := u.Repo.UpdateUserByID(ctx, u.DB, model.InputUpdateUserByID(input)); err != nil {
 		ctx.JSON(400, err.Error())
 		return
 	}

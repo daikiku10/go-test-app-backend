@@ -33,7 +33,7 @@ func NewGetUser(db *sqlx.DB, repo domain.UserRepo) *GetUser {
 }
 
 // ユーザー情報取得
-func (c *GetUser) GetUser(ctx *gin.Context) {
+func (g *GetUser) GetUser(ctx *gin.Context) {
 	// クエリパラメータの取得
 	uID := ctx.Query("userId")
 	if uID == "" {
@@ -41,7 +41,7 @@ func (c *GetUser) GetUser(ctx *gin.Context) {
 		return
 	}
 
-	u, err := c.Repo.GetUserByID(ctx, c.DB, uID)
+	u, err := g.Repo.GetUserByID(ctx, g.DB, uID)
 	if err != nil {
 		ctx.JSON(400, err.Error())
 		return
