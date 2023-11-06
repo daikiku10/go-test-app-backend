@@ -32,6 +32,12 @@ func (u *UpdateUser) UpdateUser(ctx *gin.Context) {
 		return
 	}
 
+	// トランザクション開始
+	tx, err := u.DB.BeginTx(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	if err := u.Repo.UpdateUserByID(ctx, u.DB, model.InputUpdateUserByID(input)); err != nil {
 		ctx.JSON(400, err.Error())
 		return
@@ -43,6 +49,8 @@ func (u *UpdateUser) UpdateUser(ctx *gin.Context) {
 	}{
 		UserID: input.UserID,
 	}
+
+	tx.Commit()
 	ctx.JSON(http.StatusOK, res)
 	fmt.Printf("%+v", "ユーザー情報更新成功です！")
 }

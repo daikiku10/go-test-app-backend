@@ -32,6 +32,12 @@ func (d *DeleteUser) DeleteUser(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
+	// トランザクション開始
+	tx, err := d.DB.BeginTx(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	// レスポンス作成
 	res := struct {
 		ID string `json:"userID"`
@@ -39,6 +45,7 @@ func (d *DeleteUser) DeleteUser(ctx *gin.Context) {
 		ID: uID,
 	}
 
+	tx.Commit()
 	ctx.JSON(http.StatusOK, res)
 	fmt.Printf("ユーザー削除成功です！")
 }
