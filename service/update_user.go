@@ -36,6 +36,7 @@ func (u *UpdateUser) UpdateUser(ctx *gin.Context) {
 	tx, err := u.DB.BeginTx(ctx, nil)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	if err := u.Repo.UpdateUserByID(ctx, u.DB, model.InputUpdateUserByID(input)); err != nil {

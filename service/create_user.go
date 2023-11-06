@@ -24,6 +24,7 @@ func (c *CreateUser) CreateUser(ctx *gin.Context) {
 	tx, err := c.DB.BeginTx(ctx, nil)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	u := &models.User{

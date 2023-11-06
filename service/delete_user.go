@@ -36,6 +36,7 @@ func (d *DeleteUser) DeleteUser(ctx *gin.Context) {
 	tx, err := d.DB.BeginTx(ctx, nil)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	// レスポンス作成
