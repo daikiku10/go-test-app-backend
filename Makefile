@@ -24,6 +24,9 @@ dry-migrate: ## マイグレーションテスト実行(実行されない)
 migrate:  ## マイグレーション実行
 	mysqldef -u ${DB_USER} -p ${DB_PASSWORD} -h ${DB_HOST} -P ${DB_PORT} ${DB_NAME} < ./_tools/mysql/schema.sql
 
+sqlboiler: ## SQLBoilerでのモデル自動生成
+	sqlboiler mysql -c config/sqlboiler.toml  -o models -p models --no-tests --wipe
+	
 .PHONY: moq
 moq: ## mockの作成(コンテナ内で実行すること)
 	# サービス層のモック作成
