@@ -23,6 +23,9 @@ type UserRepo interface {
 	FindUserByEmail(ctx context.Context, db repository.Queryer, email string) (model.User, error)
 }
 
+// Groupに対するインターフェース
+type GroupRepo interface{}
+
 // Cache(redis)に対するインターフェース
 type Cache interface {
 	Save(ctx context.Context, key, value string, minute time.Duration) error

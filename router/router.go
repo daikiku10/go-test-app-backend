@@ -62,6 +62,10 @@ func SetRouting(ctx context.Context, db *sqlx.DB, router *gin.Engine, cfg *confi
 	deleteUserService := service.NewDeleteUser(db, rep)
 	groupRoute.DELETE("user/d", deleteUserService.DeleteUser)
 
+	// グループ登録
+	createGroupService := service.NewCreateGroup(db, rep)
+	groupRoute.POST("/group/d", createGroupService.CreateGroup)
+
 	router.GET("/test1", func(ctx *gin.Context) {
 		fmt.Printf("aaa")
 		rsp := struct {
