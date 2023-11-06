@@ -18,4 +18,7 @@ const (
 	PasswordMaxLength int = 50
 	// メールアドレスの最大文字数
 	MailAddressMaxLength int = 256
+
+	// グループ名の最大文字数
+	GroupNameMaxLength int = 10
 )
