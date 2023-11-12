@@ -24,7 +24,9 @@ type UserRepo interface {
 }
 
 // Groupに対するインターフェース
-type GroupRepo interface{}
+type GroupRepo interface {
+	RegisterGroup(ctx context.Context, db *sqlx.DB, g *models.Group) error
+}
 
 // Cache(redis)に対するインターフェース
 type Cache interface {

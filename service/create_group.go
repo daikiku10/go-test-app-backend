@@ -5,6 +5,7 @@ import (
 
 	"github.com/daikiku10/go-test-app-backend/constant"
 	"github.com/daikiku10/go-test-app-backend/domain"
+	"github.com/daikiku10/go-test-app-backend/models"
 	"github.com/gin-gonic/gin"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/jmoiron/sqlx"
@@ -12,10 +13,10 @@ import (
 
 type CreateGroup struct {
 	DB   *sqlx.DB
-	Repo domain.UserRepo
+	Repo domain.GroupRepo
 }
 
-func NewCreateGroup(db *sqlx.DB, repo domain.UserRepo) *CreateGroup {
+func NewCreateGroup(db *sqlx.DB, repo domain.GroupRepo) *CreateGroup {
 	return &CreateGroup{DB: db, Repo: repo}
 }
 
@@ -30,7 +31,6 @@ func (cg *CreateGroup) CreateGroup(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
-	fmt.Println(input.Name)
 	// バリデーションチェック
 	err := validation.ValidateStruct(&input,
 		validation.Field(
@@ -43,5 +43,23 @@ func (cg *CreateGroup) CreateGroup(ctx *gin.Context) {
 		ctx.JSON(400, err.Error())
 		return
 	}
-	fmt.Println("バリデーションOK")
+
+	// トランザクション開始
+	tx, err := cg.DB.BeginTx(ctx, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	g := &models.Group{
+		Name: input.Name,
+	}
+
+	if err := cg.Repo.RegisterGroup(ctx, cg.DB, g); err != nil {
+		tx.Rollback()
+		ctx.JSON(400, err.Error())
+		return
+	}
+	tx.Commit()
+	fmt.Println("グループ登録成功!")
 }
