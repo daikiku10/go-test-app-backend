@@ -9,22 +9,22 @@ services:
       - .:/app
     environment:
       GO_ENV: development
-      DB_HOST: db
+      DB_HOST: go-test-db
       DB_PORT: 3306
       DB_USER: go_test
       DB_PASSWORD: password
       DB_NAME: go_database
-      REDIS_HOST: redis
+      REDIS_HOST: go-test-redis
       REDIS_PORT: 6379
     tty: true
     ports:
       - 8080:8080
     networks:
       - mynetwork
-    # dbを先に起動する
+    # go-test-dbを先に起動する
     depends_on:
-      - "db"
-  db:
+      - "go-test-db"
+  go-test-db:
     image: mysql:8.0.31
     platform: linux/amd64
     environment:
@@ -34,7 +34,7 @@ services:
       MYSQL_DATABASE: go_database
       TZ: 'Asia/Tokyo'
     volumes:
-      - db-data:/var/lib/mysql
+      - go-test-db-data:/var/lib/mysql
       - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
     ports:
      - 3306:3306
@@ -42,11 +42,11 @@ services:
       - mynetwork
   cache:
     image: "redis:latest"
-    container_name: redis
+    container_name: go-test-redis
     ports:
       - "36379:6379"
     volumes:
-      - redis-data:/data
+      - go-test-redis-data:/data
     networks:
       - mynetwork
   panel:
@@ -57,8 +57,8 @@ services:
     networks:
       - mynetwork
 volumes:
-  db-data:
-  redis-data:
+  go-test-db-data:
+  go-test-redis-data:
 networks:
   mynetwork:
     external: true
