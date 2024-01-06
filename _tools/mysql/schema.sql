@@ -19,3 +19,9 @@ CREATE TABLE `groups` (
     `update_at`               DATETIME(6) NOT NULL COMMENT 'レコード修正日時',
     PRIMARY KEY (`id`)
 ) Engine=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='グループ';
+
+CREATE TABLE `chat_users` (
+    `id`   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ユーザーの識別子',
+    `name` VARCHAR(256) NOT NULL COMMENT 'ハンドルネーム',
+    PRIMARY KEY (`id`)
+) Engine=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='チャットユーザー';
