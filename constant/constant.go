@@ -21,4 +21,8 @@ const (
 
 	// グループ名の最大文字数
 	GroupNameMaxLength int = 10
+
+	// チャットアプリ
+	// ユーザー名の最大文字数
+	ChatUserNameMaxLength = 10
 )

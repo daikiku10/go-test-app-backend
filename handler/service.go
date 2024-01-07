@@ -14,3 +14,8 @@ type RegisterTemporaryUserService interface {
 type PostRegisterUserService interface {
 	PostRegisterUser(ctx context.Context, input service.ServicePostRegisterUserInput) (*model.User, string, error)
 }
+
+// チャットアプリ
+type RegisterChatUserService interface {
+	RegisterChatUser(ctx context.Context, name string) (string, error)
+}
